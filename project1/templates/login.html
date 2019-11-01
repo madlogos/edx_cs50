@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}
+Sign In
+{% endblock %}
+
+{% block control %}
+<form class="form-signin" action="{{ url_for('sign_in') }}" method="post">
+    <h2 class="form-signin-heading">Please Sign In</h2>
+    <label for="username" class="sr-only">Enter Your Username</label>
+    <input type="text" name="username" class="form-control" placeholder="Username">
+    <label for="password" class="sr-only">Enter Your Password</label>
+    <input type="password" name="password" class="form-control" placeholder="Password">
+    <label for="signIn" class="sr-only">Click</label>
+    <button id="signIn" class="btn btn-lg btn-primary btn-block" >Sign In</button>        
+</form>
+<form class="form-signin" action="{{ url_for('sign_up') }}" method="get">
+    <button id="signUp" class="btn btn-lg btn-default btn-block">Sign up now!</button>
+</form>
+{% endblock %}

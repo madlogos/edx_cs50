@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ book[1] }}
+{% endblock %}
+
+
+{% block control %}
+&nbsp;
+{% endblock %}
+
+{% block disp %}
+<table id="book_info" class="table table-responsive" width="80%">
+    <caption><h4>Info of book <strong>{{ book[1] }}</strong></h4></caption>
+    <tr>
+        <td class="info" style="width:20%">Title</td>
+        <td style="width:30%">{{ book[1] }}</td>   
+        <td class="info" style="width:20%">Author</td>
+        <td style="width:30%">{{ book[2] }}</td>
+    </tr>
+    <tr>
+        <td class="info" style="width:20%">ISBN</td>
+        <td style="width:30%">{{ book[3] }}</td>
+        <td class="info" style="width:20%">Year</td>
+        <td style="width:30%">{{ book[4] }}</td>
+    </tr>
+    <tr>
+        <td class="info" style="width:20%">Number of ratings</td>
+        <td style="width:30%">{{ gr_data['work_ratings_count'] }}</td>
+        <td class="info" style="width:20%">Average ratings</td>
+        <td style="width:30%">{{ gr_data['average_rating'] }}</td>
+    </tr>
+</table>
+<hr>
+<table id="review" class="table table-striped table-hover table-responsive" 
+ cellspacing="0" width="80%">
+ <caption>Reviews of the book <strong>{{ book[1] }}</strong></caption>
+<thead>
+    <tr>
+        <th class="th-sm">ID</th>
+        <th class="th-sm">Time</th>
+        <th class="th-sm">Reviewer</th>
+        <th class="th-sm">Rating</th>
+        <th class="th-sm">Review</th>
+    </tr>
+</thead>
+<tbody>
+    {% for review in reviews %}
+    <tr class='d-flex'>
+        <td style="width:10%">{{ review[0] }}</td>
+        <td style="width:20%">{{ review[1] }}</td>
+        <td style="width:10%">{{ review[2] }}</td>
+        <td style="width:10%">{{ review[3] }}</td>
+        <td style="width:50%">{{ review[4] }}</td>
+    </tr>
+    {% endfor %}
+</tbody>
+</table>
+{% endblock %}
+
+{% block misc %}
+<form class="form-group" action="{{ url_for('review', book_id=book[0]) }}" method="post">
+    <h5>Submit your review comments.</h5>
+    <label for="comment" class="sr-only">Input your review comments.</label>
+    <textarea name="comment" class="form-control" rows="4" 
+        placeholder="Input your review comments for {{ book[1] }}. You can at most submit one comment for a book"></textarea>
+    <label for="submit" class="sr-only">Submit</label>
+    
+    <label for="rating">Rating</label>
+    <input id="rating" name="rating" class="rating"  min="0" max="5" step="1" 
+        data-size="sm" value='0'>
+    
+    <button id="submit" class="btn btn-lg btn-primary" 
+        {% if my_reviews > 0 %} disabled {% endif %}>Submit</button>
+</form>
+{% endblock %}

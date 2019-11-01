@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}
+Books
+{% endblock %}
+
+{% block control %}
+<form class="form-inline" action="{{ url_for('index') }}" method="post">
+    <h2 class="form-group-heading">Search Books</h2>
+    <div class="form-group">
+        <label for="isbn" class="sr-only">ISBN</label>
+        <input type="text" name="isbn" class="form-control" placeholder="ISBN">
+        <label for="title" class="sr-only">Book title</label>
+        <input type="text" name="title" class="form-control" placeholder="Book title">
+        <label for="author" class="sr-only">Book author</label>
+        <input type="text" name="author" class="form-control" placeholder="Book author">
+        <label for="search" class="sr-only">Search</label>
+        <button id="search" class="btn btn-lg btn-primary">Search</button>
+    </div>       
+</form>
+{% endblock %}
+
+{% block disp %}
+
+{% if books|length > 0 %}
+{{ pagination.info }}
+{{ pagination.links }}
+<div class="table-responsive">
+    <table id="tbl_books" class="table table-striped table-hover" cellspacing="0" width="80%">
+        <caption>Books at a glance</caption>
+        <thead>
+            <tr>
+                <th class="th-sm">ID</th>
+                <th class="th-sm">ISBN</th>
+                <th class="th-sm">Title</th>
+                <th class="th-sm">Author</th>
+                <th class="th-sm">Year</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for book in books %}
+            <tr>
+                <td><a href="{{ url_for('review', book_id=book[0]) }}">
+                    {{ book[0] }}</a></td>
+                <td>{{ book[1] }}</td>
+                <td>{{ book[2] }}</td>
+                <td>{{ book[3] }}</td>
+                <td>{{ book[4] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{{ pagination.links }}
+{% else %}
+<p>No books found.</p>
+{% endif %}
+
+{% endblock %}
+

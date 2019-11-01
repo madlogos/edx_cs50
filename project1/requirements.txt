@@ -1,0 +1,5 @@
+Flask
+Flask-Session
+flask-paginate
+psycopg2-binary
+SQLAlchemy

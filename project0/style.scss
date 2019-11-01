@@ -1,0 +1,37 @@
+$banner_img: "https://cdn.pixabay.com/photo/2017/06/04/16/31/stars-2371478_960_720.jpg";
+$banner_font_col: #ffffff;
+$alt-col: teal;
+$banner_header_fon: "Open Sans Light","Calibri Light",sans-serif;
+$banner_p_fon: "Open Sans",Calibri,sans-serif;
+
+.jumbotron {
+    margin-top: 50px;
+    background-image: url($banner_img);
+    background-size: cover;
+    h1, h2, h3, h4, h5, h6, p {
+        color: $banner_font_col;
+    }
+}
+
+#banner {
+    h1, h2, h3, h4, h5, h6 {
+        font-family: $banner_header_fon;
+    }
+    p {
+        font-family: $banner_p_fon;
+    }    
+}
+
+@media (min-width: 800px) {
+    h1, h2, h3 {
+        color: $alt-col;
+    }
+    p {
+        color: #111;
+    }
+}
+@media (max-width: 799px) {
+    p {
+        color: #333;
+    }
+}
