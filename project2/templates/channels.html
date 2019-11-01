@@ -1,0 +1,77 @@
+{% extends "_base.html" %}
+
+{% block title %}
+Channels
+{% endblock %}
+
+{% block control %}
+{% if act_user is none %}
+<div>
+    <button id="addName" class="btn btn-lg btn-primary" data-toggle="modal" data-target="#inputName">
+        Enter your display name
+    </button>
+</div>
+{% else %}
+<form class="form-inline" action="{{ url_for('set_channels') }}" method="post">
+    <div class="form-group">
+        <label for="new_channel" class="sr-only">Add a channel</label>
+        <input type="text" name="new_channel" class="form-control" placeholder="Create a new channel">
+        <label for="add_channel" class="sr-only">Submit</label>
+        <button id="add_channel" class="btn btn-md btn-primary">Submit</button>
+    </div>
+</form>
+{% endif %}
+{% endblock %}
+
+{% block disp %}
+{% if act_user is none %}
+<div id="inputName" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <form action="{{ url_for('login') }}" method="post">
+                <div class="modal-header"><label for="displayName">Your display name</label></div>
+                <div class="modal-body">
+                    <input type="text" id="displayName" name="displayName" class="form-control validate" placeholder="Your display name">
+                </div>
+                <div class="modal-footer"><button type="submit" class="btn btn-lg btn-primary">Submit</button></div>
+            </form>
+        </div>
+    </div>
+</div>
+{% else %}
+<table id="tbl_channels" class="table table-striped table-hover table-responsive" cellspacing="0" width="80%">
+    <thead>
+        <tr><th class="th-sm">The latest channel you accessed</th></tr>
+    </thead>
+    <tbody>
+        {% if last_visit is not none %}
+            <tr><td><a href="channel/{{ last_visit }}">{{ last_visit }}</a></td></tr>
+        {% endif %}
+    </tbody>
+</table>
+
+<table id="tbl_channels" class="table table-striped table-hover table-responsive" cellspacing="0" width="80%">
+    <thead>
+        <tr>
+            <th class="th-sm">Channel</th>
+            <th class="th-sm">Created at</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if channels|length > 0 %}
+            {% for channel in channels %}
+            <tr>
+                <td><a href="{{ url_for('get_channel', channel=channel['name']) }}">
+                    {{ channel['name'] }}</a></td>
+                <td>{{ channel['created'].strftime('%Y-%m-%d %H:%M:%S') }}</td>
+            </tr>
+            {% endfor %}
+        {% endif %}
+    </tbody>
+</table>
+{% endif %}
+{% endblock %}
+
+{% block misc %}
+{% endblock %}

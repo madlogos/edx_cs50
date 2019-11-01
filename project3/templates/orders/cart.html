@@ -1,0 +1,126 @@
+{% extends "_base.html" %}
+{% load static %}
+
+{% block title %}
+Cart
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'js/cart.js' %}"></script>
+{% endblock %}
+
+{% block nav_list %}
+<li><a href="menu">Menu</a></li>
+<li class="active"><a href="#">Shopping chart</a></li>
+<li><a href="orders">Orders</a></li>
+{% endblock %}
+
+{% block disp %}
+<form id="place_order" action="{% url 'cart' %}" method="post">
+{% csrf_token %}
+{% if items|length > 0 %}
+    <table class="table table-striped table-hover table-responsive" cellspacing="0">
+        <thead>
+            <th width="50%" colspan="2"><input type="checkbox" name="check_all" id="check_all"><span>Cart Item</span></input></th>
+            <th width="10%">Servings</th>
+            <th width="10%">Unit Price</th>
+            <th width="15%">Created</th>
+            <th width="15%">Updated</th>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td width="50%" colspan="2">
+                    <input type="checkbox" name="order_product_{{ item.item.id }}" data-class="order" data-item="{{ item.item.id }}" value="{{ item.item.quantity }}">
+                        <span data-toggle="tooltip" title="${{ item.item.product.price }}/serving">
+                            <strong>{{ item.item.product.category }}</strong> - {{ item.item.product.name}} ({{ item.item.product.size }})
+                        </span>
+                    </input>
+                </td>
+                <td width="10%"><input id="product_{{ item.item.id }}" name="product_{{ item.item.id }}" data-class="qty" data-item="{{ item.item.id }}" 
+                    type="number" min="0" style="width:50%" value="{{ item.quantity }}" /></td>
+                <td width="10%" id="product_price_{{ item.item.id }}" name="product_price_{{ item.item.id }}" data-class="price" data-item="{{ item.item.id }}">
+                    {{ item.item.price }}
+                </td>
+                <td width="15%">{{ item.item.created|date:"Y/m/d H:i:s" }}</td>
+                <td width="15%">{{ item.item.updated|date:"Y/m/d H:i:s" }}</td>
+            </tr>
+            
+            {% if item.item.topping.all|length > 0 %}
+                {% for topping in item.item.itemtopping_item.all %}
+                <tr>
+                    <td width="10%"></td>
+                    <td width="40%">
+                        <span data-toggle="tooltip" title="${{ topping.topping.price }}/serving">
+                            <span style="color:#bbb">+Topping:</span> {{ topping.topping.name }} x {{ topping.quantity }}
+                        </span>
+                    </td>
+                    <td width="10%"></td>
+                    <td width="10%"></td>
+                    <td width="15%"></td>
+                    <td width="15%"></td>
+                </tr>
+                {% endfor %}
+            {% endif %}
+            {% if item.item.addition.all|length > 0 %}
+                {% for addition in item.item.itemaddition_item.all %}
+                <tr>
+                    <td width="10%"></td>
+                    <td width="40%">
+                        <span data-toggle="tooltip" title="${{ addition.addition.price }}/serving">
+                            <span style="color:#bbb">+Addition:</span> {{ addition.addition.name }} ({{ addition.addition.size }}) x {{ addition.quantity }}
+                        </span>
+                    </td>
+                    <td width="10%"></td>
+                    <td width="10%"></td>
+                    <td width="15%"></td>
+                    <td width="15%"></td>
+                </tr>
+                {% endfor %}
+            {% endif %}
+
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+<p>No items found.</p>
+{% endif %}
+
+<hr>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-9 col-md-8"></div>
+        <div class="col-lg-1 col-md-1 col-sm-4">
+            <h4>Selected: </h4>
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-8">
+            <h4 style="text-align:right;font-weight:bold">$<span id="select_price">{{ select_sum }}</span></h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-9 col-md-8"></div>
+        <div class="col-lg-1 col-md-1 col-sm-4">
+            <h4>Total: </h4>
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-8">
+            <h4 style="text-align:right;font-weight:bold">$<span id="total_price">{{ cart_sum }}</span></h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-9 col-md-8"></div>
+        <div class="col-lg-3 col-md-4 col-sm-12">
+            <button id="btn_save" name="btn_save" type="submit" class="btn btn-secondary btn-block">Save my cart</button>
+        </div>
+    </div>
+    <div class="col-12">&nbsp;</div>
+    <div class="row">
+        <div class="col-lg-9 col-md-8"></div>
+        <div class="col-lg-3 col-md-4 col-sm-12">
+            <button id="btn_submit" name="btn_submit" type="submit" class="btn btn-primary btn-block">Place an order</button>
+        </div>
+    </div>
+</div>
+
+</form>
+{% endblock disp %}
+

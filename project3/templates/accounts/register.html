@@ -1,0 +1,49 @@
+{% extends "_base.html" %}
+
+{% block title %}
+Sign Up
+{% endblock %}
+
+{% block control %}
+<form class="form-signin" action="{% url 'signup' %}" method="post">
+    {% csrf_token %}
+    <h2 class="form-signin-heading">Sign Up</h2>
+    <div class="form-group">
+        <div class="fieldWrapper">
+            {{ form.username.errors }}
+            {{ form.username.label_tag }}
+            {{ form.username }}
+        </div>
+        <div class="fieldWrapper">
+            {{ form.password.errors }}
+            {{ form.password.label_tag }}
+            {{ form.password }}
+        </div>
+        <div class="fieldWrapper">
+            {{ form.password_cfm.errors }}
+            {{ form.password_cfm.label_tag }}
+            {{ form.password_cfm }}
+        </div>
+        <div class="fieldWrapper">
+            {{ form.first_name.errors }}
+            {{ form.first_name.label_tag }}
+            {{ form.first_name }}
+        </div>
+        <div class="fieldWrapper">
+            {{ form.last_name.errors }}
+            {{ form.last_name.label_tag }}
+            {{ form.last_name }}
+        </div>
+        <div class="fieldWrapper">
+            {{ form.email.errors }}
+            {{ form.email.label_tag }}
+            {{ form.email }}
+        </div>
+    </div>
+    <button id="signUp" class="btn btn-lg btn-primary btn-block">Sign Up</button>
+</form>
+<form class="form-signin" action="{% url 'login' %}">
+    <button id="signIn" class="btn btn-lg btn-default btn-block">Sign In</button>
+</form>
+{% endblock %}
+

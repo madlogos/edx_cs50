@@ -1,0 +1,49 @@
+{% extends "_base.html" %}
+{% load static %}
+
+{% block title %}
+Menu
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'js/menu.js' %}"></script>
+{% endblock %}
+
+{% block nav_list %}
+<li class="active"><a href="#">Menu</a></li>
+<li><a href="cart">Shopping chart</a></li>
+<li><a href="orders">Orders</a></li>
+{% endblock %}
+
+{% block disp %}
+{% regroup products by category as prod_lists %}
+{% for prods in prod_lists %}
+<h3>{{ prods.grouper }}</h3>
+<table class="table table-striped table-hover table-responsive" cellspacing="0">
+    <thead>
+        <th width="60%">Product</th>
+        <th width="20%">Small</th>
+        <th width="20%">Large</th>
+    </thead>
+    <tbody>
+    {% regroup prods.list by name as prodset %}
+    {% for prod in prodset %}
+    <tr>
+        <td width="60%">{{ prod.grouper }}</td>
+        {% if prod.list.0.size != 'Small' %}
+        <td width="20%"></td>
+        {% endif %}
+
+        {% for item in prod.list %}
+        <td width="20%">
+        ${{ item.price }}&emsp;
+        <button class="btn btn-sm btn-primary" id="prod_{{ item.id }}" onclick="popupfun('{{ item.id }}')">Add to Cart</button>
+        </td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endfor %}
+{% endblock %}
+

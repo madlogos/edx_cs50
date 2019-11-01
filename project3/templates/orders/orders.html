@@ -1,0 +1,110 @@
+{% extends "_base.html" %}
+{% load static %}
+
+{% block title %}
+Orders
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'js/orders.js' %}"></script>
+{% endblock %}
+
+{% block nav_list %}
+<li><a href="menu">Menu</a></li>
+<li><a href="cart">Shopping chart</a></li>
+<li class="active"><a href="#">Orders</a></li>
+{% endblock %}
+
+{% block disp %}
+<form id="submit_orders" action="{% url 'orders' %}" method="post">
+{% csrf_token %}
+
+{% if orders|length > 0 %}
+    <table class="table table-striped table-hover table-responsive" cellspacing="0">
+        <thead>
+            <tr>
+                <th width="15%"><input type="checkbox" name="check_all" id="check_all">Order ID</input></th>
+                <th width="10%">Items</th>
+                <th width="15%">Price</th>
+                <th width="10%">Status</th>
+                <th width="15%">Created</th>
+                <th width="15%">Updated</th>
+                <th width="auto" class="text-right">
+                    <button name="btn_pay" type="submit" id="btn_pay" class="btn btn-primary btn-sm">Pay</button>&nbsp;
+                    <button name="btn_cancel" type="submit" id="btn_cancel" class="btn btn-warning btn-sm">Cancel</button>&nbsp;
+                    <button name="btn_delete" type="submit" id="btn_delete" class="btn btn-danger btn-sm">Delete</button>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <th width="15%">
+                    <input type="checkbox" name="order_{{ order.id }}" data-class="order" data-item="{{ order.id }}" value="{{ order.price }}">
+                        <a href="{% url 'order' id=order.id %}"># {{ order.id }}</a>
+                    </input>
+                </th>
+                <td width="10%" id="qty_{{ order.id }}">{{ order.quantity }}</td>
+                <td width="15%">$<span id="price_{{ order.id }}">{{ order.price }}</span></td>
+                <td width="10%" id="status_{{ order.id }}">
+                    <span class=
+                        {% if order.status == 'Paid' %}"text-success"
+                        {% elif order.status == 'Completed' %}"text-info"
+                        {% elif order.status == 'Failed' %}"text-danger"
+                        {% elif order.status == 'Cancelled' %}"text-muted"
+                        {% else %}"text-primary"
+                        {% endif %}>{{ order.status }}
+                    </span>
+                </td>
+                <td width="15%">
+                    {{ order.created|date:"Y/m/d H:i:s" }}
+                </td>
+                <td width="15%">
+                    {{ order.updated|date:"Y/m/d H:i:s" }}
+                </td>
+                <td width="auto" class="text-right">
+                    <button name="pay" value="{{ order.id }}" class="btn btn-primary btn-sm"
+                     {% if order.status == 'Paid' or order.status == 'Completed' or order.status == 'Cancelled' %}
+                      disabled="disabled" 
+                     {% endif %}>Pay</button>&nbsp;
+                    <button name="cancel" value="{{ order.id }}" class="btn btn-warning btn-sm"
+                     {% if order.status == 'Paid' or order.status == 'Cancelled' %}
+                      disabled="disabled" 
+                     {% endif %}>Cancel</button>&nbsp;
+                    <button name="delete" value="{{ order.id }}" class="btn btn-danger btn-sm"
+                     {% if order.status == 'Paid' or order.status == 'Completed' %}
+                      disabled="disabled" 
+                     {% endif %}>Delete</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+<p>No items found.</p>
+{% endif %}
+
+<hr>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-9 col-md-8"></div>
+        <div class="col-lg-1 col-md-1 col-sm-4">
+            <h4>Selected: </h4>
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-8">
+            <h4 style="text-align:right;font-weight:bold">$<span id="select_price">{{ select_sum }}</span></h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-9 col-md-8"></div>
+        <div class="col-lg-1 col-md-1 col-sm-4">
+            <h4>Total: </h4>
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-8">
+            <h4 style="text-align:right;font-weight:bold">$<span id="total_price">{{ cart_sum }}</span></h4>
+        </div>
+    </div>
+</div>
+</form>
+{% endblock disp %}
+
