@@ -38,7 +38,7 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    return render(request, "accounts/login.html", {"message": ["success", "Logged out."]})
+    return HttpResponseRedirect(reverse("login"), content={"message": ["success", "Logged out."]})
 
 def signup(request):
     if request.user.is_authenticated:

@@ -194,8 +194,10 @@ def review(book_id):
     else:
         gr_data = {'work_ratings_count': '', 'average_rating': ''}
     my_reviews = sess.execute(
-        """SELECT count(*) FROM review WHERE mbr_id = :mbr_id;""",
-        {'mbr_id': session.get('act_user')['id']}).fetchone()[0]
+        """SELECT count(*) FROM review WHERE mbr_id = :mbr_id and
+        book_id = :book_id;""",
+        {'mbr_id': session.get('act_user')['id'],
+         'book_id': book_id}).fetchone()[0]
     if engine.name == 'sqlite':
         reviews_qry = """SELECT review.id, 
             datetime(review.rev_at, 'localtime'),

@@ -42,8 +42,6 @@ def login():
             users[usernm] = None
 
         session['act_user'] = usernm
-        # return render_template(
-        #     "channels.html", act_user=session.get("act_user"), channels=channels)
         return(redirect(url_for("get_channels")))
 
 
@@ -58,6 +56,7 @@ def logout():
 
 @app.route("/channels", methods=['GET'])
 def get_channels():
+    app.logger.info(str(channels))
     last_visit=users.get(session.get("act_user"))
     if last_visit not in channels.keys():
         last_visit = None
@@ -69,8 +68,8 @@ def get_channels():
 
 @app.route("/channels", methods=['POST'])
 def set_channels():
-    new_channel = request.form.get("new_channel")
-    if new_channel is not None:
+    new_channel = request.form.get("new_channel").strip()
+    if new_channel != "":
         if new_channel in channels.keys():
             flash(Markup(
                 """<i class='fa fa-2x fa-warning'></i>
@@ -81,10 +80,12 @@ def set_channels():
                 """<i class='fa fa-2x fa-check-square-o'></i>
                 The new channel %s has been created.""" % (new_channel)),
                 'success')
-            channels[new_channel] = {"created": datetime.datetime.now(), "chats":[]}
-        return redirect(url_for("get_channels"))
+            channels[new_channel] = {"created": datetime.datetime.now(), "max_id": 0, "chats":{}}
     else:
-        pass
+        flash(Markup(
+            """<i class='fa fa-2x fa-warning'></i>
+            Channel name cannot be empty."""), 'warning')
+    return redirect(url_for("get_channels"))
 
 
 @app.route("/channel/<channel>", methods=['GET'])
@@ -101,38 +102,35 @@ def get_channel(channel):
         chats=channels[channel]['chats'])
 
 
-@socketio.on("connect")
-def send_username():
-    emit('send username', {'act_user': session.get('act_user'), 
-         'act_channel': users.get(session.get('act_user'))})
-
-
 @socketio.on("send msg")
 def emit_msg(data):
+    # if msg is blank, do not emit
     if data['msg'] != '':
-        channel = data['channel']
+        channel = urllib.parse.unquote(data['channel'])
         chats = channels[channel]['chats']
-        chats.append([data['user'], data['time'], data['msg']])
+        id = channels[channel]['max_id']
+        chats[str(id)] = {'user': data['user'], 'time': data['time'], 'msg': data['msg']}
+        channels[channel]['max_id'] += 1
         if len(chats) > 100:
             chats = chats[(len(chats)-100):]
         channels[channel]['chats'] = chats
-        # with open('C:/users/a303821/desktop/out.txt') as f:
-        #     f.write(' + '.join([str(e) for e in chats]))
+
         emit('emit msg', 
-             {'user': data['user'], 'time': data['time'], 'msg': data['msg']},
-             broadcast=True)
+             {'id': id, 'user': data['user'], 'time': data['time'], 'msg': data['msg'],
+              'channel': channel}, broadcast=True)
 
 
 @socketio.on("del msg")
 def del_msg(data):
     channel = urllib.parse.unquote(data['channel'])
     chats = channels[channel]['chats']
-    app.logger.info(str(chats))
-    for i in range(len(chats)):
-        app.logger.info([data['user'], data['time']])
-        if chats[i][0] == data['user'] and chats[i][1] == data['time']:
-            channels[channel]['chats'].pop(i)
-            break
+    app.logger.info(str(chats) + "\nDel: " + str(data))
+    channels[channel]['chats'].pop(data['id'])
+    # for i in range(len(chats)):
+    #     app.logger.info([data['user'], data['time']])
+    #     if chats[i][0] == data['user'] and chats[i][1] == data['time']:
+    #         channels[channel]['chats'].pop(i)
+    #         break
     
 
 

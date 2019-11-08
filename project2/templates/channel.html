@@ -29,7 +29,7 @@ Channel {{ channel }}
         <td width="auto">
             {{#if same_user }}
                 <span data-class="post_msg" style='color:dodgerblue'>{{ post_msg }}</span>
-                <button data-class="del" style="float:right" class="btn btn-sm btn-danger">Delete</button>
+                <button data-id="{{ post_id }}" data-class="del" style="float:right" class="btn btn-sm btn-danger"">Delete</button>
             {{ else }}
                 <span data-class="post_msg" style='color:lightsalmon'>{{ post_msg }}</span>
             {{/if}}
@@ -38,12 +38,14 @@ Channel {{ channel }}
     </tr>
 </script>
 
-<script type="text/javascript" src="{{ url_for('static', filename='js/chat.js') }}"></script>
 <script type="text/javascript">
+    var act_user = decodeURI("{{ act_user }}");
+    var act_channel = decodeURI("{{ channel }}");
     document.addEventListener('DOMContentLoaded', () => {
         document.querySelector("#msgTbl").innerHTML = format_chats({{ chats|tojson }}, '{{ act_user }}');
     });
 </script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/chat.js') }}"></script>
 {% endblock %}
 
 {% block control %}
@@ -52,7 +54,7 @@ Channel {{ channel }}
 {% block disp %}
 <table id="tbl_chat" class="table table-striped table-hover table-responsive" 
  cellspacing="0" width="80%">
-    <caption>You are now in channel {{ channel }}.</caption>
+    <caption>You are now in channel [{{ channel }}].</caption>
     <thead>
         <tr>
             <th class="th-sm">User</th>
