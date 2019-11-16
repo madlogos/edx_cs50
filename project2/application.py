@@ -115,7 +115,7 @@ def emit_msg(data):
             chats = chats[(len(chats)-100):]
         channels[channel]['chats'] = chats
 
-        emit('emit msg', 
+        emit('emit msg',
              {'id': id, 'user': data['user'], 'time': data['time'], 'msg': data['msg'],
               'channel': channel}, broadcast=True)
 
@@ -124,14 +124,13 @@ def emit_msg(data):
 def del_msg(data):
     channel = urllib.parse.unquote(data['channel'])
     chats = channels[channel]['chats']
-    app.logger.info(str(chats) + "\nDel: " + str(data))
+    app.logger.info(str(chats) + ", \tDel: " + str(data))
     channels[channel]['chats'].pop(data['id'])
     # for i in range(len(chats)):
     #     app.logger.info([data['user'], data['time']])
     #     if chats[i][0] == data['user'] and chats[i][1] == data['time']:
     #         channels[channel]['chats'].pop(i)
     #         break
-    
 
 
 if __name__ == '__main__':

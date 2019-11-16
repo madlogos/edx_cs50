@@ -46,7 +46,8 @@ document.addEventListener("click", evt => {
     if (tgt.dataset.class === 'del'){
         const elem = tgt.parentElement.parentElement;
         elem.remove();
-        socket.emit("del msg", {'channel': act_channel, 'id': tgt.dataset.id});
+        console.log(encodeURI(act_channel) + ': ' + tgt.dataset.id);
+        socket.emit("del msg", {'channel': encodeURI(act_channel), 'id': tgt.dataset.id});
     };
 });
 

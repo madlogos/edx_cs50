@@ -1,5 +1,7 @@
 # Project 1
 
+Check the [video clip](https://v.youku.com/v_show/id_XNDQzMzA5MzQ4OA==.html?spm=a2hzp.8244740.0.0).
+
 All the requirements are met. The backend codes are in "application.py". And the pages are in /templates folder.
 
 - [x] Registration: Users should be able to register for your website, providing (at minimum) a username and password.

@@ -2,6 +2,8 @@
 
 Web Programming with Python and JavaScript
 
+Check the [video clip]().
+
 It meets the project requirements:
 
 - [x] Display Name: When a user visits your web application for the first time, they should be prompted to type in a display name that will eventually be associated with every message the user sends. If a user closes the page and returns to your app later, the display name should still be remembered.
